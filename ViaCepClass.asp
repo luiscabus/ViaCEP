@@ -37,7 +37,7 @@ Class ViaCep
 		  Call xmlHttp.Send()
 		  xmlHttpResponse = xmlHttp.responseText
 
-		'If response status isn't 200, returns message
+		'If response status isn't 200, returns this message
 		If xmlhttp.Status<>200 Then
 			busca = "Serviço indisponível. Status != 200."
 			Exit Function
@@ -45,6 +45,7 @@ Class ViaCep
 
 		Set xmlhttp = Nothing
 
+		'If no errors, return webserver's respose
 		busca = xmlHttpResponse
 	End Function
 
@@ -78,6 +79,7 @@ Class ViaCep
 			Exit property
 		End If
 
+		'Available formats
 		Select Case pformato
 			Case "JSON"
 				ViaCepFormato = "json"
@@ -94,65 +96,5 @@ Class ViaCep
 				"Invalid format option. Must be JSON, JSONP, XML, PIPED or QUERTY."
 		End Select
 	End Property
-
-
-	' Public Property Let Cep(pcep)
-	' 	If IsObject(pcep) then
-	' 		Err.Raise vbObjectError + 1000, "Information Class", _
-	' 		"Invalid format for CEP.  Must be in #####-### format."
-	' 		Exit property
-	' 	End If
-
-	' 	Dim objRegExp
-	' 	Set objRegExp = New regexp
-	' 	objRegExp.Pattern = "^\d{5}-\d{3}$"
-
-	' 	If objRegExp.Test(pcep) Then 'Make sure the pattern fits
-	' 		CepNumber = pcep
-	' 	Else
-	' 		Err.Raise vbObjectError + 1000, "Information Class", _
-	' 		"Invalid format for CEP.  Must be in #####-#### format."
-	' 	End If
-
-	'   	Set objRegExp = Nothing
-	' End Property
-
-	' Public Property Get Cep()
-	' 	Cep = CepNumber
-	' End Property
-
 End Class
 %>
-
-
-<!DOCTYPE html>
-<html>
-<head>
-	<title>ViaCep</title>
-	<!-- <meta charset="utf-8"> -->
-	<meta charset="iso-8859">
-</head>
-<body>
-
-	<%
-	'Examples of use
-	Dim buscaCep, endereco 'Declare variables
-	Set buscaCep = new ViaCep 'Initialize class
-
-	endereco = buscaCep.busca("57038-740") 'Stores the return of the method into a variable
-	Response.Write "<pre>" & endereco & "</pre><br>"
-
-
-	buscaCep.formato = "XML" 'Method to set the format of the return
-	endereco = buscaCep.busca("14015-130") 'Stores the return of the method into a variable
-	Response.Write "<textarea rows='20' cols='40'>" & endereco & "</textarea><br>"
-
-
-	'Exemplo de erro:
-	' buscaCep.Cep = "11111"
-
-	Set buscaCep = Nothing
-	%>
-
-</body>
-</html>
