@@ -19,41 +19,37 @@ Class ViaCep
 
 	Private Sub Class_Initialize
 		CepNumber = ""
-		CepPattern = "^\d{5}-\d{3}$"
+		CepPattern = "^\d{8}$"
 		ViaCepUrl = "https://viacep.com.br/ws/"
 		ViaCepFormato = "json"
 	End Sub
 
 
-	Public Function busca(pcep)
-		Call validate_cep(pcep)
-
-		'Connects to ViaCep and retrieves the information
+	Public Function buscar(pcep)
+		Call validar_cep(pcep)
+ 
 		Dim xmlHttp, xmlHttpResponse
-		Set xmlHttp = Server.CreateObject("MSXML2.ServerXMLHTTP")
+		Set xmlHttp = Server.CreateObject("MSXML2.ServerXMLHTTP") 'Conecta via GET ao Webservice ViaCep
 		  Call xmlHttp.open("GET", ViaCepUrl&"/"&CepNumber&"/"&ViaCepFormato&"/", false)
-		  Call xmlHttp.SetRequestHeader("Content-Type", "text/html")
-		  Call xmlHttp.setRequestHeader("CharSet", "UTF-8")
 		  Call xmlHttp.Send()
-		  xmlHttpResponse = xmlHttp.responseText
 
-		'If response status isn't 200, returns this message
-		If xmlhttp.Status<>200 Then
-			busca = "Serviço indisponível. Status != 200."
+		If xmlhttp.Status<>200 Then 'Valida o Status 200 de retorno
+			buscar = "Serviço indisponível. Status != 200."
 			Exit Function
 		End If
 
-		Set xmlhttp = Nothing
+		xmlHttpResponse = xmlHttp.responseText
 
-		'If no errors, return webserver's respose
-		busca = xmlHttpResponse
+		Set xmlhttp = Nothing 
+
+		buscar = xmlHttpResponse 'Se não houve erros, retorna a resposta do webservice
 	End Function
 
 
-	Private Sub validate_cep(pcep)
+	Private Sub validar_cep(pcep)
 		If IsObject(pcep) Then 'Validate if input is not an object
-			Err.Raise vbObjectError + 1000, "Information Class", _
-			"Invalid format for CEP. Must be in #####-### format."
+			Err.Raise vbObjectError + 1000, "ViaCep Class", _
+			"O CEP deve ser informado com 8 dígitos, sem pontuação. Ex.:57036000"
 			Exit Sub
 		End If
 
@@ -64,8 +60,8 @@ Class ViaCep
 		If objRegExp.Test(pcep) Then 'Make sure it matches the pattern 
 			CepNumber = pcep 'Set property CepNumber value if input is correct
 		Else
-			Err.Raise vbObjectError + 1000, "Information Class", _
-			"Invalid format for CEP. Must be in #####-#### format."
+			Err.Raise vbObjectError + 1000, "ViaCep Class", _
+			"O CEP deve ser informado com 8 dígitos, sem pontuação. Ex.:57036000"
 		End If
 
 	  	Set objRegExp = Nothing
@@ -73,27 +69,26 @@ Class ViaCep
 
 
 	Public Property Let formato(pformato)
-		If IsObject(pformato) then
-			Err.Raise vbObjectError + 1000, "Information Class", _
-			"Invalid format option. Must be JSON, JSONP, XML, PIPED or QUERTY."
+		If IsObject(pformato) Then
+			Err.Raise vbObjectError + 1000, "ViaCep Class", _
+			"Formato inválido. Opções são json, jsonp, xml, piped or querty."
 			Exit property
 		End If
 
-		'Available formats
-		Select Case pformato
-			Case "JSON"
+		Select Case pformato 'Opções disponíveis
+			Case "json"
 				ViaCepFormato = "json"
-			Case "JSONP"
+			Case "jsonp"
 				ViaCepFormato = "jsonp"
-			Case "XML"
+			Case "xml"
 				ViaCepFormato = "xml"
-			Case "PIPED"
+			Case "piped"
 				ViaCepFormato = "piped"
-			Case "QUERTY"
+			Case "querty"
 				ViaCepFormato = "querty"
 			Case Else
 				Err.Raise vbObjectError + 1000, "Information Class", _
-				"Invalid format option. Must be JSON, JSONP, XML, PIPED or QUERTY."
+				"Formato inválido. Opções são json, jsonp, xml, piped or querty."
 		End Select
 	End Property
 End Class

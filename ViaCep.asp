@@ -3,22 +3,23 @@
 <html>
 <head>
 	<title>ViaCep</title>
-	<!-- <meta charset="utf-8"> -->
 	<meta charset="iso-8859">
 </head>
 <body>
 
 	<%
-	'Examples of use
-	Dim buscaCep, endereco 'Declare variables
-	Set buscaCep = new ViaCep 'Initialize class
+	'Exemplos de uso
+	Dim buscaCep, endereco, cep 'Declara as variáveis
+	Set buscaCep = new ViaCep 'Inicializa a classe
 
-	endereco = buscaCep.busca("57038-740") 'Stores the return of the method into a variable
-	Response.Write "<pre>" & endereco & "</pre><br>"
+	cep = 57038740
+
+	endereco = buscaCep.buscar(cep) 'Guarda o retorno do método numa variável
+	Response.Write "<pre>" & endereco & "</pre><br>" 'Imprime o resultado na tela
 
 
-	buscaCep.formato = "XML" 'Method to set the format of the return
-	endereco = buscaCep.busca("14015-130") 'Stores the return of the method into a variable
+	buscaCep.formato = "xml" 'Método que modifica o formato de retorno
+	endereco = buscaCep.buscar(cep) 'Guarda o retorno do método numa variável
 	Response.Write "<textarea rows='20' cols='40'>" & endereco & "</textarea><br>"
 
 
